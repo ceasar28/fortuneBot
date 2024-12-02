@@ -153,8 +153,8 @@ export class TestBotService {
     const reply = tweet.choices[0].message?.content.trim();
     console.log(reply);
 
-    // const { data, errors } = await refreshedClient.v2.tweet(`${reply}`);
-    // console.log('errors :', errors);
-    // return data;
+    const { data, errors } = await refreshedClient.v2.tweet(`${reply}`);
+    console.log('errors :', errors);
+    return data;
   }
 }
