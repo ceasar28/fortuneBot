@@ -8,7 +8,7 @@ import { Model } from 'mongoose';
 @Injectable()
 export class TestBotService {
   private readonly twitterClient: TwitterApi;
-  private readonly callbackURL = 'http://127.0.0.1:5000/test-bot/callback';
+  private readonly callbackURL = `${process.env.CALLBACK_URL}`;
   private readonly openai: OpenAI;
 
   constructor(
@@ -122,7 +122,7 @@ export class TestBotService {
         {
           role: 'system',
           content:
-            'Act act a fortune telling witch and generate tweet with maximum of 100 character lenght and a hashtag: #FortuneTales.. let the tweets be unique',
+            'Adopt the voice of a mystical witch fortune teller. Generate a tweet no longer than 250 characters, delivering cryptic prophecies and speculative insights on crypto. Keep it random, mysterious, and grounded in realism. Avoid emojis or hashtags, but maintain an enigmatic and mystical tone.',
         },
       ],
       model: 'gpt-4o-mini',
