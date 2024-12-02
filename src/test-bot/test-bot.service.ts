@@ -85,7 +85,7 @@ export class TestBotService {
         model: 'gpt-4o-mini',
       });
       const reply = response.choices[0].message?.content.trim();
-      console.log(reply);
+      //   console.log(reply);
       return { reply };
     } catch (error) {
       console.error('Error generating reply:', error.message);
@@ -103,10 +103,6 @@ export class TestBotService {
       accessToken,
       refreshToken: newRefreshToken,
     } = await this.twitterClient.refreshOAuth2Token(refreshToken);
-
-    console.log('client :', refreshedClient);
-    console.log('acceToken :', accessToken);
-    console.log('refreshToken :', newRefreshToken);
 
     // Update tokens
     await this.BotModel.updateOne(
@@ -151,10 +147,9 @@ export class TestBotService {
     });
 
     const reply = tweet.choices[0].message?.content.trim();
-    console.log(reply);
 
-    const { data, errors } = await refreshedClient.v2.tweet(`${reply}`);
-    console.log('errors :', errors);
+    const { data } = await refreshedClient.v2.tweet(`${reply}`);
+
     return data;
   }
 }
