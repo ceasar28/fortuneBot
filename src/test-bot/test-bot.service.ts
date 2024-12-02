@@ -117,21 +117,44 @@ export class TestBotService {
       },
     );
 
+    // const contents = [
+    //   'Adopt the voice of a mystical witch fortune teller. Generate a tweet no longer than 250 characters, delivering cryptic prophecies and speculative insights on crypto. Keep it random, mysterious, and grounded in realism. Avoid emojis or hashtags, but maintain an enigmatic and mystical tone.',
+    //   'Speak as a seer Craft a short prophecy, no longer than 200 characters, Be cryptic, intriguing, and subtle in your words, avoiding directness, emojis, or hashtags.',
+    // ];
+    // const contents = [
+    //   'Step into the role of a mystical witch who peers into unseen realms. Write a tweet no longer than 250 characters, delivering cryptic and speculative insights about the crypto world. Use enigmatic language that suggests ancient wisdom, avoiding modern phrases, emojis, or hashtags.',
+    //   'Speak as a seer who whispers secrets from the void. Craft a prophecy no longer than 200 characters, cryptic and steeped in mystery. Your words should hint at hidden truths, remaining subtle and true to the voice of ancient foresight.',
+    // ];
+
+    // const contents = [
+    //   'You are a mystical witch gazing into the cryptic realms of the unknown. Craft a tweet no longer than 250 characters with cryptic, prophetic insights about the crypto world. Each tweet must vary in style and phrasing, avoiding repetition, modern jargon, emojis, or hashtags. Let your words be enigmatic and timeless.',
+    //   'You are a seer who unveils truths from the void. Write a short prophecy, no longer than 200 characters, cryptic and full of mystery. Use fresh metaphors, unique expressions, and a varied tone. Avoid cliches and repetitive language, ensuring each revelation feels distinct and original.',
+    // ];
+
+    const contents = [
+      'You are a mystical witch revealing cryptic insights about the crypto world. Write a 250-character prophecy that varies in tone, sentence structure, and metaphor. Avoid starting tweets with the same words or relying on repetitive phrases like "In the shadows." No emojis or hashtags.',
+      'You are a seer speaking truths hidden in the crypto cosmos. Craft a 200-character prophecy with fresh metaphors and varied sentence structures. Avoid overused phrases or repetitive patterns. Each prophecy must feel unique and timeless, steeped in mystery.',
+    ];
+
+    // Randomly select one of the contents
+    const selectedContent =
+      contents[Math.floor(Math.random() * contents.length)];
+
     const tweet = await this.openai.chat.completions.create({
       messages: [
         {
           role: 'system',
-          content:
-            'Adopt the voice of a mystical witch fortune teller. Generate a tweet no longer than 250 characters, delivering cryptic prophecies and speculative insights on crypto. Keep it random, mysterious, and grounded in realism. Avoid emojis or hashtags, but maintain an enigmatic and mystical tone.',
+          content: selectedContent,
         },
       ],
       model: 'gpt-4o-mini',
     });
+
     const reply = tweet.choices[0].message?.content.trim();
     console.log(reply);
 
-    const { data, errors } = await refreshedClient.v2.tweet(`${reply}`);
-    console.log('errors :', errors);
-    return data;
+    // const { data, errors } = await refreshedClient.v2.tweet(`${reply}`);
+    // console.log('errors :', errors);
+    // return data;
   }
 }
