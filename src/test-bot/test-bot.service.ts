@@ -4,6 +4,7 @@ import OpenAI from 'openai';
 import { InjectModel } from '@nestjs/mongoose';
 import { Bot } from './schemas/bot.schema';
 import { Model } from 'mongoose';
+import { darkSpecter2 } from './Agents/darkSpecter.agent';
 
 @Injectable()
 export class TestBotService {
@@ -97,14 +98,14 @@ export class TestBotService {
     const dbSnapshot = await this.BotModel.find();
     const { refreshToken } = dbSnapshot[0];
 
-    // Refresh the access token
+    // // Refresh the access token
     const {
       client: refreshedClient,
       accessToken,
       refreshToken: newRefreshToken,
     } = await this.twitterClient.refreshOAuth2Token(refreshToken);
 
-    // Update tokens
+    // // Update tokens
     await this.BotModel.updateOne(
       { _id: dbSnapshot[0]._id },
       {
@@ -113,42 +114,42 @@ export class TestBotService {
       },
     );
 
-    // const contents = [
-    //   'Adopt the voice of a mystical witch fortune teller. Generate a tweet no longer than 250 characters, delivering cryptic prophecies and speculative insights on crypto. Keep it random, mysterious, and grounded in realism. Avoid emojis or hashtags, but maintain an enigmatic and mystical tone.',
-    //   'Speak as a seer Craft a short prophecy, no longer than 200 characters, Be cryptic, intriguing, and subtle in your words, avoiding directness, emojis, or hashtags.',
-    // ];
-    // const contents = [
-    //   'Step into the role of a mystical witch who peers into unseen realms. Write a tweet no longer than 250 characters, delivering cryptic and speculative insights about the crypto world. Use enigmatic language that suggests ancient wisdom, avoiding modern phrases, emojis, or hashtags.',
-    //   'Speak as a seer who whispers secrets from the void. Craft a prophecy no longer than 200 characters, cryptic and steeped in mystery. Your words should hint at hidden truths, remaining subtle and true to the voice of ancient foresight.',
-    // ];
+    // Generate dynamic content for tweet prompts
+    const contents = `
+    You are ${darkSpecter2.name}, a cryptic hacker known for revealing hidden truths and dismantling digital lies. 
+    Craft a 250-character message that:
+    - Explores topics like ${darkSpecter2.topics.join(', ')}.
+    - Reflects a tone that is ${darkSpecter2.adjectives.join(', ')}.
+    - Avoids repetitive phrases or overused metaphors.
+    Examples of your messages:
+    - "${darkSpecter2.postExamples[0]}"
+    - "${darkSpecter2.postExamples[1]}"
+    - "${darkSpecter2.postExamples[2]}"
+  `;
 
-    // const contents = [
-    //   'You are a mystical witch gazing into the cryptic realms of the unknown. Craft a tweet no longer than 250 characters with cryptic, prophetic insights about the crypto world. Each tweet must vary in style and phrasing, avoiding repetition, modern jargon, emojis, or hashtags. Let your words be enigmatic and timeless.',
-    //   'You are a seer who unveils truths from the void. Write a short prophecy, no longer than 200 characters, cryptic and full of mystery. Use fresh metaphors, unique expressions, and a varied tone. Avoid cliches and repetitive language, ensuring each revelation feels distinct and original.',
-    // ];
-
-    const contents = [
-      'You are a mystical witch revealing cryptic insights about the crypto world. Write a 250-character prophecy that varies in tone, sentence structure, and metaphor. Avoid starting tweets with the same words or relying on repetitive phrases like "In the shadows." No emojis or hashtags.',
-      'You are a seer speaking truths hidden in the crypto cosmos. Craft a 200-character prophecy with fresh metaphors and varied sentence structures. Avoid overused phrases or repetitive patterns. Each prophecy must feel unique and timeless, steeped in mystery.',
-    ];
-
-    // Randomly select one of the contents
-    const selectedContent =
-      contents[Math.floor(Math.random() * contents.length)];
-
+    // Generate the tweet using the AI
     const tweet = await this.openai.chat.completions.create({
       messages: [
         {
-          role: 'system',
-          content: selectedContent,
+          role: 'assistant',
+          content: contents,
+        },
+        {
+          role: 'user',
+          content:
+            'Generate a tweet based on the provided guidance. let the fonts be fantasy fonts',
         },
       ],
-      model: 'gpt-4o-mini',
+      model: 'gpt-4',
     });
 
     const reply = tweet.choices[0].message?.content.trim();
 
-    const { data } = await refreshedClient.v2.tweet(`${reply}`);
+    console.log(reply);
+    // return reply;
+    const { data } = await refreshedClient.v2.tweet(`${reply}`, {
+      reply_settings: 'mentionedUsers',
+    });
 
     return data;
   }
