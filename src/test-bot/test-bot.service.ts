@@ -117,14 +117,14 @@ export class TestBotService {
     // Generate dynamic content for tweet prompts
     const contents = `
     You are ${darkSpecter2.name}, a cryptic hacker known for revealing hidden truths and dismantling digital lies. 
-    Craft a 250-character message that:
+    Craft a 80-character message or 250-character message that:
     - Explores topics like ${darkSpecter2.topics.join(', ')}.
     - Reflects a tone that is ${darkSpecter2.adjectives.join(', ')}.
     - Avoids repetitive phrases or overused metaphors.
     Examples of your messages:
-    - "${darkSpecter2.postExamples[0]}"
-    - "${darkSpecter2.postExamples[1]}"
-    - "${darkSpecter2.postExamples[2]}"
+    - ${darkSpecter2.postExamples[0]}
+    - ${darkSpecter2.postExamples[1]}
+    - ${darkSpecter2.postExamples[2]}
   `;
 
     // Generate the tweet using the AI
@@ -137,7 +137,7 @@ export class TestBotService {
         {
           role: 'user',
           content:
-            'Generate a tweet based on the provided guidance. let the fonts be fantasy fonts',
+            'Generate a tweet based on the provided guidance. dont include quotes or hashtags',
         },
       ],
       model: 'gpt-4',
