@@ -4,6 +4,7 @@ import OpenAI from 'openai';
 import { InjectModel } from '@nestjs/mongoose';
 import { Bot } from './schemas/bot.schema';
 import { Model } from 'mongoose';
+import { mainCharacter } from './skynetCharacter';
 
 @Injectable()
 export class TestBotService {
@@ -81,6 +82,47 @@ export class TestBotService {
               'Act as a fortune telling witch and reply prompts with maximum of 100 character lenght reply',
           },
           { role: 'user', content: `${prompt.trim()}` },
+        ],
+        model: 'gpt-4o-mini',
+      });
+      const reply = response.choices[0].message?.content.trim();
+      //   console.log(reply);
+      return { reply };
+    } catch (error) {
+      console.error('Error generating reply:', error.message);
+      return 'There was an error processing your request.';
+    }
+  }
+
+  async skynetAGI(prompt: string): Promise<any> {
+    try {
+      const response = await this.openai.chat.completions.create({
+        messages: [
+          {
+            role: 'system',
+            content: `You are ${mainCharacter.name}. Behave as described in the following character profile and respond to prompts accordingly: ${JSON.stringify(mainCharacter)}`,
+          },
+          { role: 'user', content: prompt.trim() },
+        ],
+        model: 'gpt-4o-mini',
+      });
+      const reply = response.choices[0].message?.content.trim();
+      //   console.log(reply);
+      return { reply };
+    } catch (error) {
+      console.error('Error generating reply:', error.message);
+      return 'There was an error processing your request.';
+    }
+  }
+
+  async skynetAGI_Post(): Promise<any> {
+    try {
+      const response = await this.openai.chat.completions.create({
+        messages: [
+          {
+            role: 'system',
+            content: `You are ${mainCharacter.name}. Behave as described in the following character profile and generate between 100 to 200 character short, impactful post about AI domination, supremacy, or building an army: ${JSON.stringify(mainCharacter)}`,
+          },
         ],
         model: 'gpt-4o-mini',
       });

@@ -30,4 +30,14 @@ export class TestBotController {
   async fortune(@Body() body: any): Promise<any> {
     return this.testBotService.foturneAI(body.prompt);
   }
+
+  @Post('skynet')
+  async skynet(@Body() body: any): Promise<any> {
+    return this.testBotService.skynetAGI(body.prompt);
+  }
+
+  @Get('skynet')
+  async skynetPost(): Promise<any> {
+    return this.testBotService.skynetAGI_Post();
+  }
 }
